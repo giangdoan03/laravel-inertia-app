@@ -30,4 +30,4 @@ Route::middleware('auth')->group(function () {
 
 
 // 👉 Bao gồm routes auth (login, logout, register...)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

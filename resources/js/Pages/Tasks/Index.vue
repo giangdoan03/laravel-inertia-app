@@ -1,13 +1,13 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, usePage } from '@inertiajs/vue3';
+    import {Head, usePage} from '@inertiajs/vue3';
 
-    const { props } = usePage()
+    const {props} = usePage()
     const tasks = props.tasks
 </script>
 
 <template>
-    <Head title="Danh sách công việc" />
+    <Head title="Danh sách công việc"/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -34,7 +34,8 @@
                             <td>{{ task.due_date ?? '—' }}</td>
                             <td>
                                 <span class="badge bg-secondary" v-if="task.status === 'pending'">Chờ xử lý</span>
-                                <span class="badge bg-info text-dark" v-else-if="task.status === 'in_progress'">Đang làm</span>
+                                <span class="badge bg-info text-dark"
+                                      v-else-if="task.status === 'in_progress'">Đang làm</span>
                                 <span class="badge bg-success" v-else>Hoàn thành</span>
                             </td>
                             <td>{{ new Date(task.created_at).toLocaleString() }}</td>
