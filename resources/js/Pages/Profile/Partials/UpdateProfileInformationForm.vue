@@ -1,24 +1,31 @@
 <script setup>
-    import { Link, useForm, usePage } from '@inertiajs/vue3'
+import {Link, useForm, usePage} from '@inertiajs/vue3'
 
-    defineProps({
-        mustVerifyEmail: Boolean,
-        status: String
-    })
+defineProps({
+    mustVerifyEmail: Boolean,
+    status: String
+})
 
-    const user = usePage().props.auth.user
+const user = usePage().props.auth.user
 
-    const form = useForm({
-        name: user.name,
-        email: user.email,
-    })
+const form = useForm({
+    name: user.name || '',
+    avatar: null
+})
 </script>
 
 <template>
     <section>
         <h4 class="mb-3 text-primary">🧑 Cập nhật thông tin cá nhân</h4>
 
-        <form @submit.prevent="form.patch(route('profile.update'))">
+        <form
+            @submit.prevent="form.post(route('profile.update'), {
+    forceFormData: true,
+    _method: 'PATCH'
+  })"
+            enctype="multipart/form-data"
+        >
+
             <!-- Name -->
             <div class="mb-3">
                 <label for="name" class="form-label">Tên</label>
@@ -35,22 +42,31 @@
                     {{ form.errors.name }}
                 </div>
             </div>
+            <!-- Name -->
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Ảnh đại diện</label>
+
+                <!-- Hiển thị avatar hiện tại nếu có -->
+                <div v-if="user.avatar" class="mb-2">
+                    <img :src="`/storage/${user.avatar}`" alt="Avatar" class="rounded-circle" style="height: 80px;">
+                </div>
+
+                <input
+                    type="file"
+                    id="avatar"
+                    class="form-control"
+                    accept="image/*"
+                    @change="e => form.avatar = e.target.files[0]"
+                />
+                <div class="invalid-feedback" v-if="form.errors.avatar">
+                    {{ form.errors.avatar }}
+                </div>
+            </div>
 
             <!-- Email -->
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input
-                    v-model="form.email"
-                    type="email"
-                    id="email"
-                    class="form-control"
-                    :class="{ 'is-invalid': form.errors.email }"
-                    required
-                    autocomplete="username"
-                />
-                <div class="invalid-feedback" v-if="form.errors.email">
-                    {{ form.errors.email }}
-                </div>
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" :value="user.email" disabled readonly>
             </div>
 
             <!-- Verify Email -->
