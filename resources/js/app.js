@@ -1,14 +1,13 @@
-import './bootstrap';
-import '../css/app.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import 'bootstrap'; // JS components như dropdown, modal, collapse...
+import 'bootstrap/dist/css/bootstrap.min.css'   // ✅ Bootstrap CSS trước
+import '../css/app.css'                          // ✅ App custom sau
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap'
 
 
 import {createApp, h} from 'vue';
 import {createInertiaApp} from '@inertiajs/vue3';
 import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
-import {ZiggyVue} from '../../vendor/tightenco/ziggy';
+import { ZiggyVue } from 'ziggy-js';
 import {InertiaProgress} from '@inertiajs/progress'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -31,4 +30,4 @@ createInertiaApp({
     progress: {
         color: '#ffffff',
     },
-});
+}).then(r => {});

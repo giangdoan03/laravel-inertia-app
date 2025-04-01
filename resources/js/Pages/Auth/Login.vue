@@ -1,94 +1,100 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import GuestLayout from '@/Layouts/GuestLayout.vue'
+import { Head, Link, useForm } from '@inertiajs/vue3'
 
 defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    canResetPassword: Boolean,
+    status: String,
+})
 
 const form = useForm({
     email: '',
     password: '',
     remember: false,
-});
+})
 
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
-    });
-};
+    })
+}
 </script>
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head title="Đăng nhập" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
+        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+                <h4 class="text-center mb-4">🔐 Đăng nhập hệ thống</h4>
+
+                <!-- Thông báo trạng thái -->
+                <div v-if="status" class="alert alert-success py-2 text-center small mb-3">
+                    {{ status }}
+                </div>
+
+                <form @submit.prevent="submit">
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            class="form-control"
+                            :class="{ 'is-invalid': form.errors.email }"
+                            v-model="form.email"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        />
+                        <div class="invalid-feedback" v-if="form.errors.email">
+                            {{ form.errors.email }}
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input
+                            id="password"
+                            type="password"
+                            class="form-control"
+                            :class="{ 'is-invalid': form.errors.password }"
+                            v-model="form.password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <div class="invalid-feedback" v-if="form.errors.password">
+                            {{ form.errors.password }}
+                        </div>
+                    </div>
+
+                    <!-- Remember me -->
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="remember" v-model="form.remember" />
+                        <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+                    </div>
+
+                    <!-- Nút & link -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <Link
+                            v-if="canResetPassword"
+                            :href="route('password.request')"
+                            class="small text-decoration-none"
+                        >
+                            Quên mật khẩu?
+                        </Link>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            :disabled="form.processing"
+                        >
+                            Đăng nhập
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
     </GuestLayout>
 </template>
